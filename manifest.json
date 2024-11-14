@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "e-Arşiv Portal Geliştirmeleri",
+    "version": "1.0",
+    "description": "e-Arşiv Portal sayfasına bazı özellikler ekleyen eklenti.",
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://earsivportal.efatura.gov.tr/*"
+            ],
+            "js": [
+                "jquery.min.js",
+                "content.js"
+            ]
+        }
+    ],
+    "icons": {
+        "48": "icon.png"
+    }
+}
