@@ -83,12 +83,11 @@ function editUserNote() {
             if (editNoteDialog.length == 0) {
                 $(document.body).prepend(`
                     <div id="dlgEditNote" style="display: none;z-index: 2000; background-color: rgba(0, 0, 0, 0.5); position: fixed; inset: 0px;">
-                        <div
-                            style="background-color: #ffffff;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid #999;">
+                        <div style="background-color: #ffffff;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid #999;">
                             <div style="width: 100%;padding: 8px;background-color: #999;">
                                 <span style="font-weight: bold;">Notu Düzenle</span>
                             </div>
-                            <div style="padding: 16px;width: 286px;height: 194px;">
+                            <div style="padding: 16px;width: 282px;height: 194px;">
                                 <table style="width: 100%;">
                                     <tbody>
                                         <tr>
@@ -96,8 +95,7 @@ function editUserNote() {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <input type="text" id="userNoteTitle"
-                                                    style="width: 250px;margin-bottom: 8px;margin-top: 4px;">
+                                                <input type="text" id="userNoteTitle" style="width: 250px;margin-bottom: 8px;margin-top: 4px;padding: 4px;">
                                             </td>
                                         </tr>
                                         <tr>
@@ -105,14 +103,13 @@ function editUserNote() {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <textarea id="userNoteText" style="width: 250px;height: 100px;margin-top: 4px;"></textarea>
+                                                <textarea id="userNoteText" style="width: 250px;height: 100px;margin-top: 4px;padding: 4px;"></textarea>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div
-                                style="width: 100%;padding: 16px;background-color: lightgray;border-top: 1px solid #999;display: flex;flex-flow: row-reverse;">
+                            <div style="width: 100%;padding: 8px 16px;background-color: lightgray;border-top: 1px solid #999;display: flex;flex-flow: row-reverse;">
                                 <button onclick="$('#dlgEditNote').fadeOut()" style="padding: 8px 16px;margin-left: 16px;">İptal</button>
                                 <button id="cmdSaveUserNote" style="padding: 8px 16px;">Kaydet</button>
                             </div>
@@ -193,8 +190,6 @@ function loadUserList() {
             if (selectedUser) {
                 $('#userid').val(selectedUser.username);
                 $('#password').val(selectedUser.password);
-            } else {
-                alert("Kullanıcı bilgisi bulunamadı.");
             }
         });
     });
