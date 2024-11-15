@@ -1,0 +1,4 @@
+- e-Arşiv portal'a giriş ekranında kullanıcı yönetimi
+- Fatura tutarının not kısmına yazıyla yazılması
+- Mükellefe özel not kaydının yapılması
+- Portaldan çıkış yapıldığında tekrar giriş sayfasına yönlendirme
