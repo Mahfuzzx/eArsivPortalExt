@@ -190,6 +190,7 @@ function loadUserList() {
             if (selectedUser) {
                 $('#userid').val(selectedUser.username);
                 $('#password').val(selectedUser.password);
+                $("#formdiv").find("label").addClass("active");
             }
         });
     });
