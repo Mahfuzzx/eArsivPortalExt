@@ -21,7 +21,7 @@ function updateNote() {
 
             let cmdEditNoteBtn = $("#cmdEditNote");
             if (cmdEditNoteBtn.length == 0) {
-                notElement.before(`<button style="margin-bottom: 8px;" type="button" id="cmdEditNote" class="csc-button">Notu Düzenle</button>`);
+                notElement.before(`<button type="button" id="cmdEditNote" class="margin-bottom-8 csc-button">Notu Düzenle</button>`);
                 cmdEditNoteBtn = $("#cmdEditNote");
             }
             cmdEditNoteBtn.off("click").on("click", editUserNote);
@@ -74,12 +74,12 @@ function editUserNote() {
     let editNoteDialog = $("#dlgEditNote");
     if (editNoteDialog.length == 0) {
         $(document.body).prepend(`
-            <div id="dlgEditNote" style="display: none;z-index: 2000; background-color: rgba(0, 0, 0, 0.5); position: fixed; inset: 0px;">
-                <div style="background-color: #ffffff;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid #999;">
-                    <div style="width: 100%;padding: 8px;background-color: #999;">
-                        <span style="font-weight: bold;">Notu Düzenle</span>
+            <div id="dlgEditNote">
+                <div class="dialog-frame">
+                    <div class="dialog-header padding-8">
+                        <span>Notu Düzenle</span>
                     </div>
-                    <div style="padding: 16px;width: 282px;height: 194px;">
+                    <div class="padding-16">
                         <table style="width: 100%;">
                             <tbody>
                                 <tr>
@@ -87,7 +87,8 @@ function editUserNote() {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input type="text" id="userNoteTitle" style="width: 250px;margin-bottom: 8px;margin-top: 4px;padding: 4px;">
+                                        <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="userNoteTitle"
+                                            style="width: 100%;">
                                     </td>
                                 </tr>
                                 <tr>
@@ -95,15 +96,16 @@ function editUserNote() {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <textarea id="userNoteText" style="width: 250px;height: 100px;margin-top: 4px;padding: 4px;"></textarea>
+                                        <textarea id="userNoteText" class="margin-top-4 padding-4"
+                                            style="width: 350px;height: 152px;resize: none;"></textarea>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div style="width: 100%;padding: 8px 16px;background-color: lightgray;border-top: 1px solid #999;display: flex;flex-flow: row-reverse;">
-                        <button onclick="$('#dlgEditNote').fadeOut()" style="padding: 8px 16px;margin-left: 16px;">İptal</button>
-                        <button id="cmdSaveUserNote" style="padding: 8px 16px;">Kaydet</button>
+                    <div class="dialog-footer padding-8-16">
+                        <button class="margin-left-16 padding-8-16" onclick="$('#dlgEditNote').fadeOut()">İptal</button>
+                        <button class="padding-8-16" id="cmdSaveUserNote">Kaydet</button>
                     </div>
                 </div>
             </div>
@@ -171,7 +173,7 @@ function loadUserList() {
             return;
         }
 
-        let listHTML = '<select id="userSelect" style="display: block; margin-bottom: 32px; border-bottom: 1px solid;"><option value="">Kullanıcı Seç</option>';
+        let listHTML = '<select id="userSelect" class="margin-bottom-32" style="display: block; border-bottom: 1px solid;"><option value="">Kullanıcı Seç</option>';
         userList.forEach(user => {
             listHTML += `<option value="${user.username}">${user.identifier}</option>`;
         });
@@ -194,7 +196,7 @@ function loadUserList() {
 function saveUser() {
     const username = $('#userid').val().trim();
     const password = $('#password').val().trim();
-    const identifier = prompt("Lütfen bu kullanıcı için bir tanımlayıcı girin:").trim();
+    const identifier = (prompt("Lütfen bu kullanıcı için bir tanımlayıcı girin:") ?? "").trim();
 
     if (!username || !password || !identifier) {
         alert("Kullanıcı adı, parola ve tanımlayıcı alanları boş bırakılamaz.");
@@ -236,9 +238,9 @@ function editUser() {
             return;
         }
 
-        const newUsername = prompt("Yeni kullanıcı adını girin:", userToEdit.username).trim();
-        const newPassword = prompt("Yeni parolayı girin:", userToEdit.password).trim();
-        const newIdentifier = prompt("Yeni tanımlayıcı girin:", userToEdit.identifier).trim();
+        const newUsername = (prompt("Yeni kullanıcı adını girin:", userToEdit.username) ?? "").trim();
+        const newPassword = (prompt("Yeni parolayı girin:", userToEdit.password) ?? "").trim();
+        const newIdentifier = (prompt("Yeni tanımlayıcı girin:", userToEdit.identifier) ?? "").trim();
 
         if (!newUsername || !newPassword || !newIdentifier) {
             alert("Tüm bilgileri girmeniz gerekiyor.");
@@ -287,7 +289,7 @@ $(document).ready(function () {
         loadUserList();
 
         $('#userid').after(`
-            <div style="margin-bottom: 32px">
+            <div class="margin-bottom-32">
             <button class="btn waves-effect waves-light" id="saveUserButton">Kullanıcıyı Kaydet</button>
             <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="editUserButton">Kullanıcıyı Düzenle</button>
             <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="deleteUserButton">Kullanıcıyı Sil</button>

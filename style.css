@@ -1,0 +1,72 @@
+#dlgEditNote {
+    display: none;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    inset: 0px;
+    user-select: none;
+}
+
+#dlgEditNote div.dialog-frame {
+    background-color: #ffffff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #660011;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+#dlgEditNote div.dialog-header {
+    width: 100%;
+    font-weight: bold;
+    background-color: #660011;
+    color: #fff;
+}
+
+#dlgEditNote div.dialog-footer {
+    width: 100%;
+    display: flex;
+    flex-flow: row-reverse;
+    background-color: #c5c5c5;
+}
+
+.dialog-footer button {
+    cursor: pointer;
+    background: #0382aa;
+    color: #f0e3d5;
+    border: 1px solid #01385f;
+    border-radius: 2px;
+}
+
+.margin-bottom-8 {
+    margin-bottom: 8px;
+}
+
+.margin-bottom-32 {
+    margin-bottom: 32px;
+}
+
+.margin-top-4 {
+    margin-top: 4px;
+}
+
+.margin-left-16 {
+    margin-left: 16px;
+}
+
+.padding-4 {
+    padding: 4px;
+}
+
+.padding-8 {
+    padding: 8px;
+}
+
+.padding-16 {
+    padding: 16px;
+}
+
+.padding-8-16 {
+    padding: 8px 16px;
+}
