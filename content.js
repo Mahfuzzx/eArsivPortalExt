@@ -1,32 +1,32 @@
 function updateNote() {
     // "rel" attribute'u "odenecekTutar" olan td elementini bul
-    var odenecekTutarElement = $('td[rel="odenecekTutar"] input');
+    const odenecekTutarElement = $('td[rel="odenecekTutar"] input');
 
     if (odenecekTutarElement.length) {
-        var tutar = odenecekTutarElement.val();
-        var num = Math.abs(Number(tutar.replaceAll(".", "").replace(",", ".")));
-        var txtRes = num2TextPart(num, "TL ") + num2TextPart(((num * 100) % 100).toFixed(), "Kr", true);
+        const tutar = odenecekTutarElement.val();
+        const num = Math.abs(Number(tutar.replaceAll(".", "").replace(",", ".")));
+        const txtRes = num2TextPart(num, "TL ") + num2TextPart(((num * 100) % 100).toFixed(), "Kr", true);
 
         // "rel" attribute'u "not" olan div elementini bul
-        var notElement = $('div[rel="not"] textarea');
+        const notElement = $('div[rel="not"] textarea');
 
         if (notElement.length) {
-            var not = notElement.val();
-            var yaziStart = not.indexOf("Yalnız ");
+            let not = notElement.val();
+            const yaziStart = not.indexOf("Yalnız ");
             if (yaziStart == -1) not += "Yalnız " + txtRes.trim() + "'dir.";
             else {
-                var yaziEnd = not.indexOf("'dir.", yaziStart) + 5;
+                const yaziEnd = not.indexOf("'dir.", yaziStart) + 5;
                 not = not.substring(0, yaziStart) + "Yalnız " + txtRes.trim() + "'dir." + not.substring(yaziEnd);
             }
 
-            var cmdEditNoteBtn = $("#cmdEditNote");
+            let cmdEditNoteBtn = $("#cmdEditNote");
             if (cmdEditNoteBtn.length == 0) {
                 notElement.before(`<button style="margin-bottom: 8px;" type="button" id="cmdEditNote" class="csc-button">Notu Düzenle</button>`);
                 cmdEditNoteBtn = $("#cmdEditNote");
             }
             cmdEditNoteBtn.off("click").on("click", editUserNote);
 
-            var userIDElement = $('div[rel="userID"] p');
+            const userIDElement = $('div[rel="userID"] p');
 
             if (userIDElement.length) {
                 const userID = userIDElement.text();
@@ -71,57 +71,52 @@ function saveUserNote() {
 }
 
 function editUserNote() {
+    let editNoteDialog = $("#dlgEditNote");
+    if (editNoteDialog.length == 0) {
+        $(document.body).prepend(`
+            <div id="dlgEditNote" style="display: none;z-index: 2000; background-color: rgba(0, 0, 0, 0.5); position: fixed; inset: 0px;">
+                <div style="background-color: #ffffff;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid #999;">
+                    <div style="width: 100%;padding: 8px;background-color: #999;">
+                        <span style="font-weight: bold;">Notu Düzenle</span>
+                    </div>
+                    <div style="padding: 16px;width: 282px;height: 194px;">
+                        <table style="width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td><label for="userNoteTitle">Başlık:</label></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" id="userNoteTitle" style="width: 250px;margin-bottom: 8px;margin-top: 4px;padding: 4px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="userNoteText">Not:</label></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea id="userNoteText" style="width: 250px;height: 100px;margin-top: 4px;padding: 4px;"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="width: 100%;padding: 8px 16px;background-color: lightgray;border-top: 1px solid #999;display: flex;flex-flow: row-reverse;">
+                        <button onclick="$('#dlgEditNote').fadeOut()" style="padding: 8px 16px;margin-left: 16px;">İptal</button>
+                        <button id="cmdSaveUserNote" style="padding: 8px 16px;">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        `);
+        $("#cmdSaveUserNote").off("click").on("click", saveUserNote);
+        editNoteDialog = $("#dlgEditNote");
+    }
+
     const userIDElement = $('div[rel="userID"] p');
     if (userIDElement.length) {
-        const userID = userIDElement.text();
-
-        loadUserNote(userID).then((userNote) => {
-            const userNoteText = userNote.text;
-            const userNoteTitle = userNote.title;
-
-            let editNoteDialog = $("#dlgEditNote");
-            if (editNoteDialog.length == 0) {
-                $(document.body).prepend(`
-                    <div id="dlgEditNote" style="display: none;z-index: 2000; background-color: rgba(0, 0, 0, 0.5); position: fixed; inset: 0px;">
-                        <div style="background-color: #ffffff;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);border: 1px solid #999;">
-                            <div style="width: 100%;padding: 8px;background-color: #999;">
-                                <span style="font-weight: bold;">Notu Düzenle</span>
-                            </div>
-                            <div style="padding: 16px;width: 282px;height: 194px;">
-                                <table style="width: 100%;">
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="userNoteTitle">Başlık:</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="text" id="userNoteTitle" style="width: 250px;margin-bottom: 8px;margin-top: 4px;padding: 4px;">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="userNoteText">Not:</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <textarea id="userNoteText" style="width: 250px;height: 100px;margin-top: 4px;padding: 4px;"></textarea>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div style="width: 100%;padding: 8px 16px;background-color: lightgray;border-top: 1px solid #999;display: flex;flex-flow: row-reverse;">
-                                <button onclick="$('#dlgEditNote').fadeOut()" style="padding: 8px 16px;margin-left: 16px;">İptal</button>
-                                <button id="cmdSaveUserNote" style="padding: 8px 16px;">Kaydet</button>
-                            </div>
-                        </div>
-                    </div>
-                `);
-                $("#cmdSaveUserNote").off("click").on("click", saveUserNote);
-                editNoteDialog = $("#dlgEditNote");
-            }
-
-            $("#userNoteTitle").val(userNoteTitle);
-            $("#userNoteText").val(userNoteText);
+        loadUserNote(userIDElement.text()).then((userNote) => {
+            $("#userNoteTitle").val(userNote.title);
+            $("#userNoteText").val(userNote.text);
             editNoteDialog.fadeIn();
         });
     }
@@ -131,19 +126,18 @@ function num2TextPart(srcnum = 0, symb = "", returnEmpty = false) {
     if (srcnum == 0)
         if (returnEmpty) return "";
         else return "Sıfır" + symb;
-    var num = Math.floor(srcnum);
-    var txtRes = "";
-    var birler = ["", "Bir", "İki", "Üç", "Dört", "Beş", "Altı", "Yedi", "Sekiz", "Dokuz"];
-    var onlar = ["", "On", "Yirmi", "Otuz", "Kırk", "Elli", "Altmış", "Yetmiş", "Seksen", "Doksan"];
-    var gruplar = ["", "Bin", "Milyon", "Milyar", "Trilyon"];
-    var yüz = "Yüz";
+    const birler = ["", "Bir", "İki", "Üç", "Dört", "Beş", "Altı", "Yedi", "Sekiz", "Dokuz"];
+    const onlar = ["", "On", "Yirmi", "Otuz", "Kırk", "Elli", "Altmış", "Yetmiş", "Seksen", "Doksan"];
+    const gruplar = ["", "Bin", "Milyon", "Milyar", "Trilyon"];
+    let num = Math.floor(srcnum);
+    let txtRes = "";
     gruplar.forEach(grup => {
-        var grupNum = num % 1000;
-        var basamakBir = grupNum % 10;
-        var basamakOn = Math.floor(grupNum / 10) % 10;
-        var basamakYüz = Math.floor(grupNum / 100) % 10;
+        const grupNum = num % 1000;
+        const basamakBir = grupNum % 10;
+        const basamakOn = Math.floor(grupNum / 10) % 10;
+        const basamakYüz = Math.floor(grupNum / 100) % 10;
         txtRes = (basamakYüz > 1 ? birler[basamakYüz] : "")
-            + (basamakYüz > 0 ? yüz : "")
+            + (basamakYüz > 0 ? "Yüz" : "")
             + onlar[basamakOn]
             + ((grup == "Bin" && grupNum == 1) ? "" : birler[basamakBir])
             + (grupNum > 0 ? grup : "") + txtRes;
@@ -177,7 +171,7 @@ function loadUserList() {
             return;
         }
 
-        var listHTML = '<select id="userSelect" style="display: block; margin-bottom: 32px; border-bottom: 1px solid;"><option value="">Kullanıcı Seç</option>';
+        let listHTML = '<select id="userSelect" style="display: block; margin-bottom: 32px; border-bottom: 1px solid;"><option value="">Kullanıcı Seç</option>';
         userList.forEach(user => {
             listHTML += `<option value="${user.username}">${user.identifier}</option>`;
         });
@@ -288,6 +282,7 @@ function deleteUser() {
 
 // DOM yüklendiğinde çalıştır
 $(document).ready(function () {
+    if (document.location.href == "https://earsivportal.efatura.gov.tr/") document.location.href = "https://earsivportal.efatura.gov.tr/intragiris.html";
     if (document.location.href.indexOf("intragiris.html") > -1) {
         loadUserList();
 
