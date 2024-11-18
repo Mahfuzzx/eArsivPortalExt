@@ -1,5 +1,4 @@
-function updateNote() {
-    // "rel" attribute'u "odenecekTutar" olan td elementini bul
+function updateYaziTutar() {
     const odenecekTutarElement = $('td[rel="odenecekTutar"] input');
 
     if (odenecekTutarElement.length) {
@@ -12,33 +11,65 @@ function updateNote() {
 
         if (notElement.length) {
             let not = notElement.val();
+
             const yaziStart = not.indexOf("Yalnız ");
             if (yaziStart == -1) not += "Yalnız " + txtRes.trim() + "'dir.";
             else {
                 const yaziEnd = not.indexOf("'dir.", yaziStart) + 5;
                 not = not.substring(0, yaziStart) + "Yalnız " + txtRes.trim() + "'dir." + not.substring(yaziEnd);
             }
-
-            let cmdEditNoteBtn = $("#cmdEditNote");
-            if (cmdEditNoteBtn.length == 0) {
-                notElement.before(`<button type="button" id="cmdEditNote" class="margin-bottom-8 csc-button">Notu Düzenle</button>`);
-                cmdEditNoteBtn = $("#cmdEditNote");
-            }
-            cmdEditNoteBtn.off("click").on("click", editUserNote);
-
-            const userIDElement = $('div[rel="userID"] p');
-
-            if (userIDElement.length) {
-                const userID = userIDElement.text();
-                loadUserNote(userID).then((userNote) => {
-                    const userNoteText = userNote.text;
-                    const userNoteTitle = userNote.title;
-                    if (userNoteText != "" && not.indexOf(userNoteTitle + ":") == -1) not += "\n\n" + userNoteTitle + ":\n" + userNoteText;
-                    notElement.val(not);
-                });
-            }
         }
     }
+}
+
+function updateNoteUI() {
+    const notElement = $('div[rel="not"] textarea');
+
+    if (notElement.length) {
+        let not = notElement.val();
+
+        let cmdEditNoteBtn = $("#cmdEditNote");
+        if (cmdEditNoteBtn.length == 0) {
+            notElement.before(`<button type="button" id="cmdEditNote" class="margin-bottom-8 csc-button">Notu Düzenle</button>`);
+            cmdEditNoteBtn = $("#cmdEditNote");
+        }
+        cmdEditNoteBtn.off("click").on("click", editUserNote);
+
+        const userIDElement = $('div[rel="userID"] p');
+
+        if (userIDElement.length) {
+            const userID = userIDElement.text();
+            loadUserNote(userID).then((userNote) => {
+                const userNoteText = userNote.text;
+                const userNoteTitle = userNote.title;
+                if (userNoteText != "" && not.indexOf(userNoteTitle + ":") == -1) not += "\n\n" + userNoteTitle + ":\n" + userNoteText;
+                notElement.val(not);
+            });
+        }
+    }
+}
+
+function updateMusteriUI() {
+    const musteriVKNElement = $('td[rel="vknTckn"] input');
+    if (musteriVKNElement.length) {
+        let cmdMusterilerBtn = $("#cmdMusteriler");
+        if (cmdMusterilerBtn.length == 0) {
+            musteriVKNElement.after(`<button type="button" id="cmdMusteriler" class="margin-left-8 csc-button">Müşteriler...</button>`);
+            cmdMusterilerBtn = $("#cmdMusteriler");
+            cmdMusterilerBtn.css({
+                "height": musteriVKNElement.css("height"),
+                "vertical-align": "top"
+            });
+        }
+        cmdMusterilerBtn.off("click").on("click", () => { alert("Müşteri listesi...") });
+
+    }
+}
+
+function updateFaturaPage() {
+    updateYaziTutar();
+    updateNoteUI();
+    updateMusteriUI();
 }
 
 function loadUserNote(userID) {
@@ -300,5 +331,5 @@ $(document).ready(function () {
         $('#editUserButton').on('click', editUser);
         $('#deleteUserButton').on('click', deleteUser);
     }
-    else setInterval(updateNote, 500);
+    else setInterval(updateFaturaPage, 500);
 });
