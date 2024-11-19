@@ -1,4 +1,4 @@
-#dlgEditNote {
+.dialog.modal-layer {
     display: none;
     z-index: 2000;
     background-color: rgba(0, 0, 0, 0.5);
@@ -7,7 +7,7 @@
     user-select: none;
 }
 
-#dlgEditNote div.dialog-frame {
+.dialog .dialog-frame {
     background-color: #ffffff;
     position: absolute;
     top: 50%;
@@ -17,46 +17,92 @@
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
 }
 
-#dlgEditNote div.dialog-header {
+.dialog .dialog-header {
     width: 100%;
     font-weight: bold;
     background-color: #660011;
     color: #fff;
 }
 
-#dlgEditNote div.dialog-footer {
+.dialog .dialog-footer {
     width: 100%;
     display: flex;
     flex-flow: row-reverse;
     background-color: #c5c5c5;
 }
 
-.dialog-footer button {
+.dialog button {
     cursor: pointer;
     background: #0382aa;
     color: #f0e3d5;
     border: 1px solid #01385f;
     border-radius: 2px;
+    float: left;
+}
+
+.dialog .editlist {
+    border: 1px solid gray;
+    height: 120px;
+    overflow-y: scroll;
+    margin-top: 4px;
+    padding: 4px 0px;
+}
+
+.dialog .editlist .row {
+    width: 100%;
+    padding: 4px 8px;
+    display: flex;
+}
+
+.dialog .editlist .row:hover {
+    background-color: #dddddd;
+}
+
+.dialog .editlist .row .chk {
+    width: 16px;
+    height: 26px;
+    margin-right: 8px;
+}
+
+.dialog .editlist .empty.row .chk {
+    opacity: 0;
+}
+
+.dialog .editlist .row .txt {
+    width: 100%;
+    padding: 4px;
+}
+
+.dialog textarea {
+    resize: none;
 }
 
 .margin-bottom-8 {
     margin-bottom: 8px;
 }
 
+.margin-bottom-32 {
+    margin-bottom: 32px;
+}
+
 .margin-left-8 {
     margin-left: 8px;
 }
 
-.margin-bottom-32 {
-    margin-bottom: 32px;
+.margin-left-16 {
+    margin-left: 16px;
 }
 
 .margin-top-4 {
     margin-top: 4px;
 }
 
-.margin-left-16 {
-    margin-left: 16px;
+.margin-top-16 {
+    margin-top: 4px;
+}
+
+.margin-right-8 {
+    margin-right: 8px;
 }
 
 .padding-4 {
@@ -71,6 +117,31 @@
     padding: 16px;
 }
 
+.padding-4-8 {
+    padding: 4px 8px;
+}
+
 .padding-8-16 {
     padding: 8px 16px;
+}
+
+.padding-top-16 {
+    padding-top: 16px;
+}
+
+.padding-16-32 {
+    padding-top: 32px;
+    padding-right: 16px;
+}
+
+.border {
+    border: gray 1px solid;
+}
+
+.flex {
+    display: flex;
+}
+
+.width-min {
+    width: min-content;
 }
