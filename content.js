@@ -1,11 +1,13 @@
 function updateFaturaPage() {
     updateYaziTutar();
     updateNoteUI();
-    updateMusteriUI();
+    updateCustomerUI();
 }
 
 // DOM yüklendiğinde çalıştır
 $(document).ready(function () {
+    /*const customerList = [];
+    chrome.storage.local.set({ customerList });*/
     if (document.location.href == "https://earsivportal.efatura.gov.tr/") document.location.href = "https://earsivportal.efatura.gov.tr/intragiris.html";
     if (document.location.href.indexOf("intragiris.html") > -1) {
         loadUserList();

@@ -6,17 +6,17 @@ const
     <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="deleteUserButton">Kullanıcıyı Sil</button>
 </div>
 `,
-    musterilerButton = `<button type="button" id="cmdMusteriler" class="margin-left-8 csc-button">Müşteriler...</button>`,
-    dialogMusteriListesi = `
-<div id="dlgMusteriListesi" class="dialog modal-layer">
+    customersButton = `<button type="button" id="cmdCustomers" class="margin-left-8 csc-button">Müşteriler...</button>`,
+    dialogCustomerList = `
+<div id="dlgCustomerList" class="dialog modal-layer">
     <div class="dialog-frame">
         <div class="dialog-header padding-8">
             <span>Müşteri Seç/Kaydet</span>
         </div>
         <div class="flex">
             <div class="padding-16 width-min">
-                <label for="lstMusteriler">Müşteriler:</label>
-                <select class="margin-top-4" style="width: 200px;height: 401px;" size="2" id="lstMusteriler">
+                <label for="lstCustomers">Müşteriler:</label>
+                <select class="margin-top-4" style="width: 200px;height: 401px;" size="2" id="lstCustomers">
                 </select>
             </div>
             <div class="padding-16-32" style="width: 400px;">
@@ -44,8 +44,7 @@ const
                             </tr>
                             <tr>
                                 <td>
-                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtLastName"
-                                        style="width: 15em;">
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtLastName" style="width: 15em;">
                                 </td>
                             </tr>
                             <tr>
@@ -53,8 +52,7 @@ const
                             </tr>
                             <tr>
                                 <td>
-                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtTitle"
-                                        style="width: 100%;">
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtTitle" style="width: 100%;">
                                 </td>
                             </tr>
                         </tbody>
@@ -70,14 +68,15 @@ const
                     </div>
                 </div>
                 <div class="padding-top-8" style="display: flex;">
-                    <button class="padding-4-8 margin-right-8">Kaydet</button>
-                    <button class="padding-4-8">Sil</button>
+                    <button class="padding-4-8 margin-right-8" id="cmdNewCustomer">Yeni</button>
+                    <button class="padding-4-8 margin-right-8" id="cmdSaveCustomer">Kaydet</button>
+                    <button class="padding-4-8" id="cmdDeleteUser">Sil</button>
                 </div>
             </div>
         </div>
         <div class="dialog-footer padding-8-16">
-            <button class="margin-left-16 padding-8-16" onclick="$('#dlgMusteriListesi').fadeOut()">Kapat</button>
-            <button class="padding-8-16" id="cmdSelectMusteri">Seç</button>
+            <button class="margin-left-16 padding-8-16" onclick="$('#dlgCustomerList').fadeOut()">Kapat</button>
+            <button class="padding-8-16" id="cmdSelectCustomer">Seç</button>
         </div>
     </div>
 </div>
@@ -98,8 +97,7 @@ const
                     </tr>
                     <tr>
                         <td>
-                            <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtUserNoteTitle"
-                                style="width: 100%;">
+                            <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtUserNoteTitle" style="width: 100%;">
                         </td>
                     </tr>
                     <tr>
@@ -107,8 +105,7 @@ const
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="txtUserNoteText" class="margin-top-4 padding-4"
-                                style="width: 350px;height: 152px;resize: none;"></textarea>
+                            <textarea id="txtUserNoteText" class="margin-top-4 padding-4" style="width: 350px;height: 152px;resize: none;"></textarea>
                         </td>
                     </tr>
                 </tbody>
