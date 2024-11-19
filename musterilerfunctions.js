@@ -10,7 +10,10 @@ function updateMusteriUI() {
                 "vertical-align": "top"
             });
         }
-        cmdMusterilerBtn.off("click").on("click", () => { alert("Müşteri listesi...") });
-
+        cmdMusterilerBtn.off("click").on("click", musterilerList);
     }
+}
+
+function musterilerList() {
+
 }
