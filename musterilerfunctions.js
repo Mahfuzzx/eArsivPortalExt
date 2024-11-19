@@ -1,3 +1,9 @@
+function getUserVKN() {
+    const userIDElement = $('div[rel="userID"] p');
+    if (userIDElement.length) return userIDElement.text();
+    else return '';
+}
+
 function updateCustomerUI() {
     const customerVKNElement = $('td[rel="vknTckn"] input');
     if (customerVKNElement.length) {
@@ -126,16 +132,24 @@ function loadCustomerList() {
     });
 }
 
-function updateCustomerList(customerList) {
-    chrome.storage.local.set({ customerList }, function () {
-        loadCustomerList();
+function updateCustomerList(newCustomerList) {
+    const userVKN = getUserVKN();
+    chrome.storage.local.get("customerList", function (data) {
+        const customerList = data.customerList || {};
+        customerList[userVKN] = newCustomerList;
+        chrome.storage.local.set({ customerList }, function () {
+            loadCustomerList();
+        });
     });
+
 }
 
 function getCustomerList(callback) {
+    const userVKN = getUserVKN();
     chrome.storage.local.get("customerList", function (data) {
-        const customerList = data.customerList || [];
-        customerList.sort((a, b) => a.fullName.localeCompare(b.fullName));
-        callback(customerList);
+        const customerList = data.customerList || {};
+        const usersCustomerList = customerList[userVKN] || [];
+        usersCustomerList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        callback(usersCustomerList);
     });
 }
