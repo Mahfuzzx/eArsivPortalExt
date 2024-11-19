@@ -23,7 +23,7 @@ function loadUserList() {
             return;
         }
 
-        let listHTML = '<select id="userSelect" class="margin-bottom-32" style="display: block; border-bottom: 1px solid;"><option value="">Kullanıcı Seç</option>';
+        let listHTML = userListHTML;
         userList.forEach(user => {
             listHTML += `<option value="${user.username}">${user.identifier}</option>`;
         });

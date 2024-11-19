@@ -6,7 +6,7 @@ function updateNoteUI() {
 
         let cmdEditNoteBtn = $("#cmdEditNote");
         if (cmdEditNoteBtn.length == 0) {
-            notElement.before(`<button type="button" id="cmdEditNote" class="margin-bottom-8 csc-button">Notu Düzenle</button>`);
+            notElement.before(editNoteButton);
             cmdEditNoteBtn = $("#cmdEditNote");
             cmdEditNoteBtn.off("click").on("click", editUserNote);
         }
@@ -58,43 +58,7 @@ function saveUserNote() {
 function editUserNote() {
     let editNoteDialog = $("#dlgEditNote");
     if (editNoteDialog.length == 0) {
-        $(document.body).prepend(`
-                <div id="dlgEditNote" class="dialog modal-layer">
-                    <div class="dialog-frame">
-                        <div class="dialog-header padding-8">
-                            <span>Notu Düzenle</span>
-                        </div>
-                        <div class="padding-16">
-                            <table style="width: 100%;">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="txtUserNoteTitle">Başlık:</label></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtUserNoteTitle"
-                                                style="width: 100%;">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="txtUserNoteText">Not:</label></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <textarea id="txtUserNoteText" class="margin-top-4 padding-4"
-                                                style="width: 350px;height: 152px;resize: none;"></textarea>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="dialog-footer padding-8-16">
-                            <button class="margin-left-16 padding-8-16" onclick="$('#dlgEditNote').fadeOut()">İptal</button>
-                            <button class="padding-8-16" id="cmdSaveUserNote">Kaydet</button>
-                        </div>
-                    </div>
-                </div>
-            `);
+        $(document.body).prepend(dialogEditNote);
         $("#cmdSaveUserNote").off("click").on("click", saveUserNote);
         editNoteDialog = $("#dlgEditNote");
     }

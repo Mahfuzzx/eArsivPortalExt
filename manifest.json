@@ -15,6 +15,7 @@
             ],
             "js": [
                 "jquery.min.js",
+                "elements.js",
                 "userfunctions.js",
                 "musterilerfunctions.js",
                 "usernotefunctions.js",

@@ -10,13 +10,7 @@ $(document).ready(function () {
     if (document.location.href.indexOf("intragiris.html") > -1) {
         loadUserList();
 
-        $('#userid').after(`
-            <div class="margin-bottom-32">
-            <button class="btn waves-effect waves-light" id="saveUserButton">Kullanıcıyı Kaydet</button>
-            <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="editUserButton">Kullanıcıyı Düzenle</button>
-            <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="deleteUserButton">Kullanıcıyı Sil</button>
-            </div>
-        `);
+        $('#userid').after(userControlButtons);
 
         $('#saveUserButton').on('click', saveUser);
         $('#editUserButton').on('click', editUser);
