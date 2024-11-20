@@ -105,7 +105,7 @@ const
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="txtUserNoteText" class="margin-top-4 padding-4" style="width: 350px;height: 153px;resize: none;"></textarea>
+                            <textarea id="txtUserNoteText" class="margin-top-4 padding-4" style="width: 350px;height: 152px;resize: none;"></textarea>
                         </td>
                     </tr>
                 </tbody>
