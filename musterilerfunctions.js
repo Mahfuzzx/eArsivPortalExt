@@ -75,6 +75,10 @@ function loadCustomerListDialog() {
 function selectCustomer() {
     try {
         const customerVKN = $('#txtVKN').val().trim();
+        const customerName = $('#txtName').val().trim();
+        const customerLastName = $('#txtLastName').val().trim();
+        const customerTitle = $('#txtTitle').val().trim();
+
         var customerAddresses = [];
         $("#dlgCustomerList .editlist .row.tofill .chk").each(function () {
             if (this.checked) {
@@ -82,11 +86,30 @@ function selectCustomer() {
                 if (rowVal != '') customerAddresses.push(rowVal);
             }
         });
+
         if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
         if (!customerAddresses.length) throw new Error("En az bir adres seçilmelidir.");
+
         const customerVKNElement = $('td[rel="vknTckn"] input');
         if (customerVKNElement.length) {
-            console.log(customerVKNElement);
+            const inputs = [
+                { element: $('td[rel="aliciUnvan"] input'), value: customerTitle, change: 0 },
+                { element: $('td[rel="aliciAdi"] input'), value: customerName, change: 0 },
+                { element: $('td[rel="aliciSoyadi"] input'), value: customerLastName, change: 0 }
+            ];
+
+            const enforceValue = ({ input, interval }) => {
+                if (input.element.val() !== input.value) {
+                    input.element.val(input.value);
+                    input.change++;
+                }
+                if (input.change == 3) clearInterval(interval);
+            };
+            inputs.forEach(input => {
+                input.element.val(input.value);
+                const interval = setInterval(() => enforceValue({ input, interval }), 100);
+            });
+
             customerVKNElement.val(customerVKN);
             customerVKNElement[0].dispatchEvent(new Event("change"));
             const customerAddressElement = $('td[rel="bulvarcaddesokak"] textarea');
