@@ -93,21 +93,18 @@ function selectCustomer() {
         const customerVKNElement = $('td[rel="vknTckn"] input');
         if (customerVKNElement.length) {
             const inputs = [
-                { element: $('td[rel="aliciUnvan"] input'), value: customerTitle, change: 0 },
-                { element: $('td[rel="aliciAdi"] input'), value: customerName, change: 0 },
-                { element: $('td[rel="aliciSoyadi"] input'), value: customerLastName, change: 0 }
+                { element: $('td[rel="aliciUnvan"] input'), value: customerTitle },
+                { element: $('td[rel="aliciAdi"] input'), value: customerName },
+                { element: $('td[rel="aliciSoyadi"] input'), value: customerLastName }
             ];
-
-            const enforceValue = ({ input, interval }) => {
-                if (input.element.val() !== input.value) {
-                    input.element.val(input.value);
-                    input.change++;
-                }
-                if (input.change == 3) clearInterval(interval);
+            const enforceValue = ({ element, value }) => {
+                if (element.val() !== value) element.val(value);
             };
-            inputs.forEach(input => {
-                input.element.val(input.value);
-                const interval = setInterval(() => enforceValue({ input, interval }), 100);
+            inputs.forEach(({ element, value }) => {
+                const interval = setInterval(() => enforceValue({ element, value }), 100);
+                setTimeout(() => {
+                    clearInterval(interval);
+                }, 5000);
             });
 
             customerVKNElement.val(customerVKN);
@@ -118,6 +115,10 @@ function selectCustomer() {
             customerAddressElement.val(customerAddresses.join("\n"));
         }
         $('#dlgCustomerList').fadeOut();
+        $("#cmdCustomers").prop("disabled", true);
+        setTimeout(() => {
+            $("#cmdCustomers").prop("disabled", false);
+        }, 5000);
     }
     catch (error) {
         alert(error.message);
@@ -190,13 +191,13 @@ function emptyFields() {
 }
 
 function loadCustomerList() {
+    const lstCustomers = $("#lstCustomers");
+    lstCustomers.empty();
     getCustomerList(customerList => {
         if (customerList.length === 0) {
             return;
         }
 
-        const lstCustomers = $("#lstCustomers");
-        lstCustomers.empty();
         let listHTML = "";
         customerList.forEach(customer => {
             listHTML += `<option value="${customer.customerVKN}">${customer.fullName}</option>`;
