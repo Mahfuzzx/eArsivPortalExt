@@ -61,7 +61,7 @@ const
                         <label>Adresler:</label>
                         <div class="editlist">
                             <div class="empty row">
-                                <input class="chk" type="checkbox">
+                                <input class="chk" tabindex="-1" type="checkbox">
                                 <input class="txt" type="text" class="padding-4">
                             </div>
                         </div>
@@ -70,7 +70,7 @@ const
                 <div class="padding-top-8" style="display: flex;">
                     <button class="padding-4-8 margin-right-8" id="cmdNewCustomer">Yeni</button>
                     <button class="padding-4-8 margin-right-8" id="cmdSaveCustomer">Kaydet</button>
-                    <button class="padding-4-8" id="cmdDeleteUser">Sil</button>
+                    <button class="padding-4-8" id="cmdDeleteCustomer">Sil</button>
                 </div>
             </div>
         </div>

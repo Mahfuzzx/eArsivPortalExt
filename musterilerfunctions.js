@@ -15,7 +15,7 @@ function updateCustomerUI() {
                 "height": customerVKNElement.css("height"),
                 "vertical-align": "top"
             });
-            cmdCustomersBtn.off("click").on("click", customerList);
+            cmdCustomersBtn.off("click").on("click", loadCustomerListDialog);
         }
     }
 }
@@ -39,7 +39,7 @@ function addAddressRow(address = '') {
     return txt;
 }
 
-function customerList() {
+function loadCustomerListDialog() {
     let customerListDialog = $("#dlgCustomerList");
     if (customerListDialog.length == 0) {
         $(document.body).prepend(dialogCustomerList);
@@ -48,7 +48,9 @@ function customerList() {
             addAddressRow().trigger("focus");
         });
         $("#cmdSaveCustomer").off("click").on("click", saveCustomer);
+        $("#cmdDeleteCustomer").off("click").on("click", deleteCustomer);
         $("#cmdNewCustomer").off("click").on("click", emptyFields);
+        $("#cmdSelectCustomer").off("click").on("click", selectCustomer);
         $("#lstCustomers").off("change").on("change", function () {
             getCustomerList(customerList => {
                 const selectedCustomer = customerList.find(customer => customer.customerVKN === this.value);
@@ -68,6 +70,53 @@ function customerList() {
     emptyFields();
     loadCustomerList();
     customerListDialog.fadeIn();
+}
+
+function selectCustomer() {
+    try {
+        const customerVKN = $('#txtVKN').val().trim();
+        var customerAddresses = [];
+        $("#dlgCustomerList .editlist .row.tofill .chk").each(function () {
+            if (this.checked) {
+                const rowVal = $(this).next().val().trim();
+                if (rowVal != '') customerAddresses.push(rowVal);
+            }
+        });
+        if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
+        if (!customerAddresses.length) throw new Error("En az bir adres seçilmelidir.");
+        const customerVKNElement = $('td[rel="vknTckn"] input');
+        if (customerVKNElement.length) {
+            console.log(customerVKNElement);
+            customerVKNElement.val(customerVKN);
+            customerVKNElement[0].dispatchEvent(new Event("change"));
+            const customerAddressElement = $('td[rel="bulvarcaddesokak"] textarea');
+            const customerCountryElement = $('td[rel="ulke"] select');
+            customerCountryElement.val("Türkiye"); // <--------------------------- ülke seçimi?
+            customerAddressElement.val(customerAddresses.join("\n"));
+        }
+        $('#dlgCustomerList').fadeOut();
+    }
+    catch (error) {
+        alert(error.message);
+    }
+}
+
+function deleteCustomer() {
+    const selectedOption = $("#dlgCustomerList").find("option:selected");
+    if (selectedOption.length) {
+        const customerTitle = selectedOption.text();
+        const customerVKN = selectedOption.val();
+        if (!confirm(customerTitle + " isimli müşteriyi silmek istediğinizden emin misiniz?")) return;
+        getCustomerList(customerList => {
+            const updatedList = customerList.filter(customer => customer.customerVKN !== customerVKN);
+            if (updatedList.length === customerList.length) {
+                alert("Silinmek istenen müşteri bulunamadı.");
+                return;
+            }
+            updateCustomerList(updatedList);
+            emptyFields();
+        });
+    }
 }
 
 function saveCustomer() {
@@ -101,6 +150,7 @@ function saveCustomer() {
             }
 
             updateCustomerList(customerList);
+            alert("Başarıyla kaydedildi.");
         });
 
     }
