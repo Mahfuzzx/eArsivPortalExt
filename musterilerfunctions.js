@@ -79,13 +79,18 @@ function selectCustomer() {
         const customerLastName = $('#txtLastName').val().trim();
         const customerTitle = $('#txtTitle').val().trim();
 
-        var customerAddresses = [];
-        $("#dlgCustomerList .editlist .row.tofill .chk").each(function () {
-            if (this.checked) {
-                const rowVal = $(this).next().val().trim();
-                if (rowVal != '') customerAddresses.push(rowVal);
-            }
-        });
+        let customerAddresses = [];
+        let rowChkBoxes = $("#dlgCustomerList .editlist .row.tofill .chk");
+
+        if (rowChkBoxes.length == 1) customerAddresses.push(rowChkBoxes.next().val().trim());
+        else {
+            rowChkBoxes.each(function () {
+                if (this.checked) {
+                    const rowVal = $(this).next().val().trim();
+                    if (rowVal != '') customerAddresses.push(rowVal);
+                }
+            });
+        }
 
         if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
         if (!customerAddresses.length) throw new Error("En az bir adres seçilmelidir.");
@@ -150,7 +155,7 @@ function saveCustomer() {
         const customerLastName = $('#txtLastName').val().trim();
         const customerTitle = $('#txtTitle').val().trim();
         const fullName = (customerName + " " + customerLastName + " " + customerTitle).trim();
-        var customerAddresses = [];
+        let customerAddresses = [];
         $("#dlgCustomerList .editlist .row.tofill .txt").each(function () {
             const rowVal = $(this).val().trim();
             if (rowVal != '') customerAddresses.push(rowVal);
