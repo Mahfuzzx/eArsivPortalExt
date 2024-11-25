@@ -1,6 +1,6 @@
 .dialog.modal-layer {
     display: none;
-    z-index: 2000;
+    z-index: 5000;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     inset: 0px;
