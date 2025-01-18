@@ -6,7 +6,7 @@ function updateFaturaPage() {
 
 // DOM yüklendiğinde çalıştır
 $(document).ready(function () {
-    /*const customerList = [];
+    /*const customerList = []; // reset
     chrome.storage.local.set({ customerList });*/
     if (document.location.href == "https://earsivportal.efatura.gov.tr/") document.location.href = "https://earsivportal.efatura.gov.tr/intragiris.html";
     if (document.location.href.indexOf("intragiris.html") > -1) {
