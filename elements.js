@@ -1,9 +1,16 @@
 const
     userControlButtons = `
 <div class="margin-bottom-32">
-    <button class="btn waves-effect waves-light" id="saveUserButton">Kullanıcıyı Kaydet</button>
-    <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="editUserButton">Kullanıcıyı Düzenle</button>
-    <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="deleteUserButton">Kullanıcıyı Sil</button>
+    <div class="margin-bottom-8">
+        <button class="btn waves-effect waves-light" id="saveUserButton">Kullanıcıyı Kaydet</button>
+        <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="editUserButton">Kullanıcıyı Düzenle</button>
+        <button style="margin-left: 16px;" class="btn waves-effect waves-light" id="deleteUserButton">Kullanıcıyı Sil</button>
+    </div>
+    <div>
+        <button style="margin-left: 16px; background-color: #4CAF50;" class="btn waves-effect waves-light" id="exportDataButton">Verileri Dışa Aktar</button>
+        <button style="margin-left: 8px; background-color: #2196F3;" class="btn waves-effect waves-light" id="importDataButton">Verileri İçe Aktar</button>
+        <button style="margin-left: 8px; background-color: #f44336;" class="btn waves-effect waves-light" id="clearDataButton">Tümünü Sil</button>
+    </div>
 </div>
 `,
     customersButton = `<button type="button" id="cmdCustomers" class="margin-left-8 csc-button">Müşteriler...</button>`,

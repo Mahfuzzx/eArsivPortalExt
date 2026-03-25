@@ -17,6 +17,9 @@ $(document).ready(function () {
         $('#saveUserButton').on('click', saveUser);
         $('#editUserButton').on('click', editUser);
         $('#deleteUserButton').on('click', deleteUser);
+        $('#exportDataButton').on('click', exportData);
+        $('#importDataButton').on('click', importData);
+        $('#clearDataButton').on('click', clearAllData);
     }
     else setInterval(updateFaturaPage, 500);
 });
