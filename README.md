@@ -3,6 +3,7 @@
 - Mükellefe özel not kaydının yapılması
 - Fatura sayfasında müşteri yönetimi
 - Portaldan çıkış yapıldığında tekrar giriş sayfasına yönlendirme
+- Veri içeri/dışarı aktarım
 
 ![eap1](https://github.com/user-attachments/assets/b868fcbf-347f-4367-bebf-473e1fc0a22a)
 
