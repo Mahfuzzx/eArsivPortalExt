@@ -2,7 +2,7 @@
 
 e-Arşiv Portal'a ([earsivportal.efatura.gov.tr](https://earsivportal.efatura.gov.tr)) ekstra kolaylıklar katan bir Chrome eklentisidir. Kullanıcı bilgileri, müşteri kayıtları, ürün kayıtları ve fatura notları gibi tekrar eden verileri tarayıcıda saklayarak fatura kesme sürecini hızlandırır.
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/fekmelafdlaekeghjkghemfljbokndom?label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/e-ar%C5%9Fiv-portal-geli%C5%9Ftirme/fekmelafdlaekeghjkghemfljbokndom?hl=tr)
+[![Available in the Chrome Web Store](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/YT2Grfi9vEBa2wAPzhWa.png)](https://chromewebstore.google.com/detail/e-ar%C5%9Fiv-portal-geli%C5%9Ftirme/fekmelafdlaekeghjkghemfljbokndom?hl=tr)
 
 ---
 
