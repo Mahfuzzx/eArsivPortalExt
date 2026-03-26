@@ -1,7 +1,10 @@
 function getUserVKN() {
     const userIDElement = $('div[rel="userID"] p');
-    if (userIDElement.length) return userIDElement.text();
-    else return '';
+    const vkn = userIDElement.length ? userIDElement.text().trim() : '';
+    if (!vkn) {
+        console.warn("[getUserVKN] VKN alınamadı. DOM sorgusu başarısız.");
+    }
+    return vkn;
 }
 
 function updateCustomerUI() {
@@ -95,6 +98,8 @@ function selectCustomer() {
         if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
         if (!customerAddresses.length) throw new Error("En az bir adres seçilmelidir.");
 
+        console.log("[selectCustomer] Seçilen müşteri. VKN:", customerVKN, "Adresler:", customerAddresses);
+
         const customerVKNElement = $('td[rel="vknTckn"] input');
         if (customerVKNElement.length) {
             const inputs = [
@@ -126,6 +131,7 @@ function selectCustomer() {
         }, 5000);
     }
     catch (error) {
+        console.error("[selectCustomer] Hata:", error);
         alert(error.message);
     }
 }
@@ -135,16 +141,22 @@ function deleteCustomer() {
     if (selectedOption.length) {
         const customerTitle = selectedOption.text();
         const customerVKN = selectedOption.val();
+        console.log("[deleteCustomer] Silinecek müşteri. VKN:", customerVKN, "Ad:", customerTitle);
+        
         if (!confirm(customerTitle + " isimli müşteriyi silmek istediğinizden emin misiniz?")) return;
         getCustomerList(customerList => {
             const updatedList = customerList.filter(customer => customer.customerVKN !== customerVKN);
             if (updatedList.length === customerList.length) {
                 alert("Silinmek istenen müşteri bulunamadı.");
+                console.warn("[deleteCustomer] Müşteri bulunamadı.");
                 return;
             }
+            console.log("[deleteCustomer] Müşteri silindi. Yeni liste:", updatedList);
             updateCustomerList(updatedList);
             emptyFields();
         });
+    } else {
+        console.warn("[deleteCustomer] Seçilen müşteri yok.");
     }
 }
 
@@ -168,22 +180,33 @@ function saveCustomer() {
         if (!customerAddresses.length) throw new Error("En az bir adres girilmelidir.");
 
         const customerData = { customerVKN, customerName, customerLastName, customerTitle, fullName, customerAddresses };
+        const userVKN = getUserVKN();
+        
+        if (!userVKN) {
+            throw new Error("Hata: Kullanıcı VKN alınamadı. Lütfen sayfayı yenileyiniz.");
+        }
+
+        console.log("[saveCustomer] userVKN:", userVKN, "customerData:", customerData);
 
         getCustomerList(customerList => {
             const existingCustomerIndex = customerList.findIndex(customer => customer.customerVKN === customerVKN);
 
             if (existingCustomerIndex !== -1) {
                 customerList[existingCustomerIndex] = customerData;
+                console.log("[saveCustomer] Müşteri güncellendi.");
             } else {
                 customerList.push(customerData);
+                console.log("[saveCustomer] Yeni müşteri eklendi.");
             }
 
+            console.log("[saveCustomer] Kaydedilecek müşteri listesi:", customerList);
             updateCustomerList(customerList);
             alert("Başarıyla kaydedildi.");
         });
 
     }
     catch (error) {
+        console.error("[saveCustomer] Hata:", error);
         alert(error.message);
     }
 }
@@ -199,7 +222,9 @@ function loadCustomerList() {
     const lstCustomers = $("#lstCustomers");
     lstCustomers.empty();
     getCustomerList(customerList => {
+        console.log("[loadCustomerList] Müşteri listesi yükleniyor:", customerList);
         if (customerList.length === 0) {
+            console.warn("[loadCustomerList] Müşteri listesi boş.");
             return;
         }
 
@@ -208,15 +233,32 @@ function loadCustomerList() {
             listHTML += `<option value="${customer.customerVKN}">${customer.fullName}</option>`;
         });
         lstCustomers.append(listHTML);
+        console.log("[loadCustomerList] Müşteri listesi GUI'ye eklendi. Toplam:", customerList.length);
     });
 }
 
 function updateCustomerList(newCustomerList) {
     const userVKN = getUserVKN();
+    
+    if (!userVKN) {
+        alert("Hata: Kullanıcı VKN alınamadı. Lütfen sayfayı yenileyiniz.");
+        console.error("[updateCustomerList] userVKN boş");
+        return;
+    }
+    
     chrome.storage.local.get("customerList", function (data) {
-        const customerList = data.customerList || {};
-        customerList[userVKN] = newCustomerList;
-        chrome.storage.local.set({ customerList }, function () {
+        // customerList her zaman object olmalı, Array ise convert et
+        let allCustomerLists = data.customerList;
+        if (!allCustomerLists || Array.isArray(allCustomerLists) || typeof allCustomerLists !== 'object') {
+            console.warn("[updateCustomerList] customerList invalid, sıfırlaniyor. Eski veri:", allCustomerLists);
+            allCustomerLists = {};
+        }
+        
+        allCustomerLists[userVKN] = newCustomerList;
+        console.log("[updateCustomerList] Storage'a yazılacak veri:", { customerList: allCustomerLists });
+        console.log("[updateCustomerList] userVKN:", userVKN, "newCustomerList:", newCustomerList);
+        chrome.storage.local.set({ customerList: allCustomerLists }, function () {
+            console.log("[updateCustomerList] Veriler storage'e başarıyla kaydedildi.");
             loadCustomerList();
         });
     });
@@ -225,9 +267,23 @@ function updateCustomerList(newCustomerList) {
 
 function getCustomerList(callback) {
     const userVKN = getUserVKN();
+    
+    if (!userVKN) {
+        console.warn("[getCustomerList] userVKN boş, varsayılan liste döndürülüyor.");
+        callback([]);
+        return;
+    }
+    
     chrome.storage.local.get("customerList", function (data) {
-        const customerList = data.customerList || {};
+        // customerList her zaman object olmalı, Array ise convert et
+        let customerList = data.customerList;
+        if (!customerList || Array.isArray(customerList) || typeof customerList !== 'object') {
+            console.warn("[getCustomerList] customerList invalid, boş liste döndürülüyor. Eski veri:", customerList);
+            customerList = {};
+        }
+        
         const usersCustomerList = customerList[userVKN] || [];
+        console.log("[getCustomerList] userVKN:", userVKN, "müşteri listesi:", usersCustomerList);
         usersCustomerList.sort((a, b) => a.fullName.localeCompare(b.fullName));
         callback(usersCustomerList);
     });
