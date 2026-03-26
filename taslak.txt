@@ -1,0 +1,321 @@
+bir e-arşiv fatura kesme portalı var.
+ben bu portal için bazı özellikler ekleyen chrome eklentisi yazmıştım.
+şimdi bu eklentiye ürün kaydı özelliği de eklemek istiyorum.
+şöyle anlatayım:
+bu portalda fatura kesme ekranına girdiğimizde faturadaki ürünlerin bilgilerini girdiğimiz bir tablo çıkıyor karşımıza.
+tabloyu $("table[rel='malHizmetTable']") ile buluyoruz.
+tablonun tbody nesnesinde <tr rowid="1"> şeklinde satırlar var.
+üçüncü sütunda ürün adı yazılan bir alan var.
+bu alanın yanına bir buton koyup kullanıcı basınca kayıtlı ürünlerin bulunduğu bir pencerecik açacağız.
+bu pencerecikte ürün ekleme, silme, düzenleme ve seçme özellikleri olacak.
+seçilen ürünün bilgileri ilgili satırdaki alanlara doldurulacak.
+örnek olması açısından eklentinin müşterilerle ilgili kodunu yazıyorum:
+const customersButton = `<button type="button" id="cmdCustomers" class="margin-left-8 csc-button">Müşteriler...</button>`,
+    dialogCustomerList = `
+<div id="dlgCustomerList" class="dialog modal-layer">
+    <div class="dialog-frame">
+        <div class="dialog-header padding-8">
+            <span>Müşteri Seç/Kaydet</span>
+        </div>
+        <div class="flex">
+            <div class="padding-16 width-min">
+                <label for="lstCustomers">Müşteriler:</label>
+                <select class="margin-top-4" style="width: 200px;height: 401px;" size="2" id="lstCustomers">
+                </select>
+            </div>
+            <div class="padding-16-32" style="width: 400px;">
+                <div class="padding-8 border">
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td><label for="txtVKN">VKN/TCKN:</label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" maxlength="11" type="text" id="txtVKN" style="width: 15em;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="txtName">Adı:</label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtName" style="width: 15em;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="txtLastName">Soyadı:</label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtLastName" style="width: 15em;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="txtTitle">Ünvanı:</label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input class="margin-bottom-8 margin-top-4 padding-4" type="text" id="txtTitle" style="width: 100%;">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <label>Adresler:</label>
+                        <div class="editlist">
+                            <div class="empty row">
+                                <input class="chk" tabindex="-1" type="checkbox">
+                                <input class="txt" type="text" class="padding-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="padding-top-8" style="display: flex;">
+                    <button class="padding-4-8 margin-right-8" id="cmdNewCustomer">Yeni</button>
+                    <button class="padding-4-8 margin-right-8" id="cmdSaveCustomer">Kaydet</button>
+                    <button class="padding-4-8" id="cmdDeleteCustomer">Sil</button>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-footer padding-8-16">
+            <button class="margin-left-16 padding-8-16" onclick="$('#dlgCustomerList').fadeOut()">Kapat</button>
+            <button class="padding-8-16" id="cmdSelectCustomer">Seç</button>
+        </div>
+    </div>
+</div>
+`;
+function getUserVKN() {
+    const userIDElement = $('div[rel="userID"] p');
+    if (userIDElement.length) return userIDElement.text();
+    else return '';
+}
+
+function updateCustomerUI() {
+    const customerVKNElement = $('td[rel="vknTckn"] input');
+    if (customerVKNElement.length) {
+        let cmdCustomersBtn = $("#cmdCustomers");
+        if (cmdCustomersBtn.length == 0) {
+            customerVKNElement.after(customersButton);
+            cmdCustomersBtn = $("#cmdCustomers");
+            cmdCustomersBtn.css({
+                "height": customerVKNElement.css("height"),
+                "vertical-align": "top"
+            });
+            cmdCustomersBtn.off("click").on("click", loadCustomerListDialog);
+        }
+    }
+}
+
+function addAddressRow(address = '') {
+    const emptyRow = $("#dlgCustomerList .editlist .empty");
+    emptyRow.find(".chk")[0].checked = false;
+    const cloneRow = emptyRow.clone();
+    emptyRow.before(cloneRow);
+    cloneRow.toggleClass("empty tofill");
+    const txt = cloneRow.find(".txt");
+    txt.off("blur").on("blur", function (e) {
+        const txtElement = $(this);
+        const parentRow = txtElement.parents(".row");
+        if (txtElement.val().trim() == '') {
+            txtElement.off("blur");
+            parentRow.remove();
+        }
+    });
+    txt.val(address);
+    return txt;
+}
+
+function loadCustomerListDialog() {
+    let customerListDialog = $("#dlgCustomerList");
+    if (customerListDialog.length == 0) {
+        $(document.body).prepend(dialogCustomerList);
+        customerListDialog = $("#dlgCustomerList");
+        $("#dlgCustomerList .editlist .empty .txt").off("focus").on("focus", function (e) {
+            addAddressRow().trigger("focus");
+        });
+        $("#cmdSaveCustomer").off("click").on("click", saveCustomer);
+        $("#cmdDeleteCustomer").off("click").on("click", deleteCustomer);
+        $("#cmdNewCustomer").off("click").on("click", emptyFields);
+        $("#cmdSelectCustomer").off("click").on("click", selectCustomer);
+        $("#lstCustomers").off("change").on("change", function () {
+            getCustomerList(customerList => {
+                const selectedCustomer = customerList.find(customer => customer.customerVKN === this.value);
+                if (selectedCustomer) {
+                    $("#txtVKN").val(selectedCustomer.customerVKN);
+                    $("#txtName").val(selectedCustomer.customerName);
+                    $("#txtLastName").val(selectedCustomer.customerLastName);
+                    $("#txtTitle").val(selectedCustomer.customerTitle);
+                    $("#dlgCustomerList .row.tofill").remove();
+                    selectedCustomer.customerAddresses.forEach(address => {
+                        addAddressRow(address);
+                    });
+                }
+            });
+        });
+    }
+    emptyFields();
+    loadCustomerList();
+    customerListDialog.fadeIn();
+}
+
+function selectCustomer() {
+    try {
+        const customerVKN = $('#txtVKN').val().trim();
+        const customerName = $('#txtName').val().trim();
+        const customerLastName = $('#txtLastName').val().trim();
+        const customerTitle = $('#txtTitle').val().trim();
+
+        let customerAddresses = [];
+        let rowChkBoxes = $("#dlgCustomerList .editlist .row.tofill .chk");
+
+        if (rowChkBoxes.length == 1) customerAddresses.push(rowChkBoxes.next().val().trim());
+        else {
+            rowChkBoxes.each(function () {
+                if (this.checked) {
+                    const rowVal = $(this).next().val().trim();
+                    if (rowVal != '') customerAddresses.push(rowVal);
+                }
+            });
+        }
+
+        if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
+        if (!customerAddresses.length) throw new Error("En az bir adres seçilmelidir.");
+
+        const customerVKNElement = $('td[rel="vknTckn"] input');
+        if (customerVKNElement.length) {
+            const inputs = [
+                { element: $('td[rel="aliciUnvan"] input'), value: customerTitle },
+                { element: $('td[rel="aliciAdi"] input'), value: customerName },
+                { element: $('td[rel="aliciSoyadi"] input'), value: customerLastName }
+            ];
+            const enforceValue = ({ element, value }) => {
+                if (element.val() !== value) element.val(value);
+            };
+            inputs.forEach(({ element, value }) => {
+                const interval = setInterval(() => enforceValue({ element, value }), 100);
+                setTimeout(() => {
+                    clearInterval(interval);
+                }, 5000);
+            });
+
+            customerVKNElement.val(customerVKN);
+            customerVKNElement[0].dispatchEvent(new Event("change"));
+            const customerAddressElement = $('td[rel="bulvarcaddesokak"] textarea');
+            const customerCountryElement = $('td[rel="ulke"] select');
+            customerCountryElement.val("Türkiye"); // <--------------------------- ülke seçimi?
+            customerAddressElement.val(customerAddresses.join("\n"));
+        }
+        $('#dlgCustomerList').fadeOut();
+        $("#cmdCustomers").prop("disabled", true);
+        setTimeout(() => {
+            $("#cmdCustomers").prop("disabled", false);
+        }, 5000);
+    }
+    catch (error) {
+        alert(error.message);
+    }
+}
+
+function deleteCustomer() {
+    const selectedOption = $("#dlgCustomerList").find("option:selected");
+    if (selectedOption.length) {
+        const customerTitle = selectedOption.text();
+        const customerVKN = selectedOption.val();
+        if (!confirm(customerTitle + " isimli müşteriyi silmek istediğinizden emin misiniz?")) return;
+        getCustomerList(customerList => {
+            const updatedList = customerList.filter(customer => customer.customerVKN !== customerVKN);
+            if (updatedList.length === customerList.length) {
+                alert("Silinmek istenen müşteri bulunamadı.");
+                return;
+            }
+            updateCustomerList(updatedList);
+            emptyFields();
+        });
+    }
+}
+
+function saveCustomer() {
+    try {
+        const customerVKN = $('#txtVKN').val().trim();
+        const customerName = $('#txtName').val().trim();
+        const customerLastName = $('#txtLastName').val().trim();
+        const customerTitle = $('#txtTitle').val().trim();
+        const fullName = (customerName + " " + customerLastName + " " + customerTitle).trim();
+        let customerAddresses = [];
+        $("#dlgCustomerList .editlist .row.tofill .txt").each(function () {
+            const rowVal = $(this).val().trim();
+            if (rowVal != '') customerAddresses.push(rowVal);
+        });
+
+        if (customerVKN.length < 10 || customerVKN.length > 11) throw new Error("Kimlik numarası en az 10, en çok 11 haneli olmalıdır.");
+        if (customerVKN.length == 11 && (!customerName || !customerLastName)) throw new Error("Ad ve soyad alanları dolu olmalıdır.");
+        if (customerVKN.length == 10 && !customerTitle) throw new Error("Ünvan alanı dolu olmalıdır.");
+        if (customerVKN.length == 10 && (customerName || customerLastName)) throw new Error("Şirketler için ad soyad alanları boş bırakılmalıdır.");
+        if (!customerAddresses.length) throw new Error("En az bir adres girilmelidir.");
+
+        const customerData = { customerVKN, customerName, customerLastName, customerTitle, fullName, customerAddresses };
+
+        getCustomerList(customerList => {
+            const existingCustomerIndex = customerList.findIndex(customer => customer.customerVKN === customerVKN);
+
+            if (existingCustomerIndex !== -1) {
+                customerList[existingCustomerIndex] = customerData;
+            } else {
+                customerList.push(customerData);
+            }
+
+            updateCustomerList(customerList);
+            alert("Başarıyla kaydedildi.");
+        });
+
+    }
+    catch (error) {
+        alert(error.message);
+    }
+}
+
+function emptyFields() {
+    $("#lstCustomers").val("");
+    $("#dlgCustomerList input").val("");
+    $("#dlgCustomerList .row.tofill").remove();
+    $("#dlgCustomerList .chk")[0].checked = false;
+}
+
+function loadCustomerList() {
+    const lstCustomers = $("#lstCustomers");
+    lstCustomers.empty();
+    getCustomerList(customerList => {
+        if (customerList.length === 0) {
+            return;
+        }
+
+        let listHTML = "";
+        customerList.forEach(customer => {
+            listHTML += `<option value="${customer.customerVKN}">${customer.fullName}</option>`;
+        });
+        lstCustomers.append(listHTML);
+    });
+}
+
+function updateCustomerList(newCustomerList) {
+    const userVKN = getUserVKN();
+    chrome.storage.local.get("customerList", function (data) {
+        const customerList = data.customerList || {};
+        customerList[userVKN] = newCustomerList;
+        chrome.storage.local.set({ customerList }, function () {
+            loadCustomerList();
+        });
+    });
+
+}
+
+function getCustomerList(callback) {
+    const userVKN = getUserVKN();
+    chrome.storage.local.get("customerList", function (data) {
+        const customerList = data.customerList || {};
+        const usersCustomerList = customerList[userVKN] || [];
+        usersCustomerList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        callback(usersCustomerList);
+    });
+}
