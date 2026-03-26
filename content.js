@@ -2,6 +2,7 @@ function updateFaturaPage() {
     updateYaziTutar();
     updateNoteUI();
     updateCustomerUI();
+    updateProductUI();
 }
 
 // DOM yüklendiğinde çalıştır

@@ -1,26 +1,29 @@
 // Tüm kaydedilmiş verileri dışa aktar
 function exportData() {
-    chrome.storage.local.get(["userList", "customerList", "userNotes"], function (data) {
+    chrome.storage.local.get(["userList", "customerList", "userNotes", "productList"], function (data) {
         const exportData = {
             userList: data.userList || [],
-            customerList: data.customerList || {}, // customerList object'tir (userVKN'ye göre indexed)
+            customerList: data.customerList || {},
             userNotes: data.userNotes || {},
+            productList: data.productList || {},
             exportDate: new Date().toISOString(),
-            version: "1.0"
+            version: "1.1"
         };
 
-        // Debug bilgisi
         console.log("[exportData] Dışa aktarılacak veriler:", exportData);
-        
+
         // Müşteri sayısını hesapla
         let totalCustomers = 0;
         Object.values(exportData.customerList).forEach(userCustomers => {
-            if (Array.isArray(userCustomers)) {
-                totalCustomers += userCustomers.length;
-            }
+            if (Array.isArray(userCustomers)) totalCustomers += userCustomers.length;
         });
 
-        // JSON dosyası oluştur ve indir
+        // Ürün sayısını hesapla
+        let totalProducts = 0;
+        Object.values(exportData.productList).forEach(userProducts => {
+            if (Array.isArray(userProducts)) totalProducts += userProducts.length;
+        });
+
         const dataStr = JSON.stringify(exportData, null, 2);
         const dataBlob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(dataBlob);
@@ -35,8 +38,9 @@ function exportData() {
         const message = `Veriler başarıyla dışa aktarıldı!\n\n` +
             `- Kaydedilmiş Kullanıcılar: ${exportData.userList.length}\n` +
             `- Kaydedilmiş Müşteriler: ${totalCustomers}\n` +
+            `- Kaydedilmiş Ürünler: ${totalProducts}\n` +
             `- Kaydedilmiş Notlar: ${Object.keys(exportData.userNotes).length}`;
-        
+
         alert(message);
     });
 }
@@ -46,7 +50,7 @@ function importData() {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json";
-    
+
     input.onchange = function (e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -58,8 +62,7 @@ function importData() {
 
                 console.log("[importData] İçe aktarılan veriler:", importedData);
 
-                // Veri geçerliliğini kontrol et
-                if (!importedData.userList && !importedData.customerList && !importedData.userNotes) {
+                if (!importedData.userList && !importedData.customerList && !importedData.userNotes && !importedData.productList) {
                     alert("Hata: Geçersiz yedek dosyası. İçe aktarılacak veri bulunamadı.");
                     return;
                 }
@@ -68,16 +71,22 @@ function importData() {
                 let totalCustomers = 0;
                 if (importedData.customerList && typeof importedData.customerList === 'object') {
                     Object.values(importedData.customerList).forEach(userCustomers => {
-                        if (Array.isArray(userCustomers)) {
-                            totalCustomers += userCustomers.length;
-                        }
+                        if (Array.isArray(userCustomers)) totalCustomers += userCustomers.length;
                     });
                 }
 
-                // Kullanıcıdan onay al
+                // Ürün sayısını hesapla
+                let totalProducts = 0;
+                if (importedData.productList && typeof importedData.productList === 'object') {
+                    Object.values(importedData.productList).forEach(userProducts => {
+                        if (Array.isArray(userProducts)) totalProducts += userProducts.length;
+                    });
+                }
+
                 const confirmMessage = `Yedek Bilgileri:\n\n` +
                     `- Kaydedilmiş Kullanıcılar: ${importedData.userList ? importedData.userList.length : 0}\n` +
                     `- Kaydedilmiş Müşteriler: ${totalCustomers}\n` +
+                    `- Kaydedilmiş Ürünler: ${totalProducts}\n` +
                     `- Kaydedilmiş Notlar: ${importedData.userNotes ? Object.keys(importedData.userNotes).length : 0}\n\n` +
                     (importedData.exportDate ? `Yedek Tarihi: ${new Date(importedData.exportDate).toLocaleString('tr-TR')}\n\n` : '') +
                     `UYARI: Mevcut veriler üzerine yazılacak. Devam etmek istiyor musunuz?`;
@@ -88,11 +97,11 @@ function importData() {
                     return;
                 }
 
-                // Verileri kaydet
                 const dataToSave = {
                     userList: importedData.userList || [],
                     customerList: importedData.customerList || {},
-                    userNotes: importedData.userNotes || {}
+                    userNotes: importedData.userNotes || {},
+                    productList: importedData.productList || {}
                 };
 
                 console.log("[importData] Storage'a kaydedilecek veriler:", dataToSave);
@@ -100,9 +109,7 @@ function importData() {
                 chrome.storage.local.set(dataToSave, function () {
                     alert("Veriler başarıyla içe aktarıldı! Sayfayı yenileyiniz.");
                     document.body.removeChild(input);
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
+                    setTimeout(() => window.location.reload(), 1000);
                 });
 
             } catch (error) {
@@ -129,6 +136,7 @@ function clearAllData() {
     const confirmMessage = `UYARI: Tüm kaydedilmiş veriler silinecek!\n\n` +
         `- Tüm Kullanıcılar\n` +
         `- Tüm Müşteriler\n` +
+        `- Tüm Ürünler\n` +
         `- Tüm Notlar\n\n` +
         `Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`;
 

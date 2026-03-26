@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "e-Arşiv Portal Geliştirmeleri",
-    "version": "1.3",
+    "version": "1.4",
     "description": "e-Arşiv Portal sayfasına bazı özellikler ekleyen eklenti.",
     "permissions": [
         "storage",
@@ -20,6 +20,7 @@
                 "musterilerfunctions.js",
                 "usernotefunctions.js",
                 "exportimportfunctions.js",
+                "productfunctions.js",
                 "yaziile.js",
                 "content.js"
             ],
