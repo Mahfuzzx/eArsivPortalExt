@@ -134,7 +134,7 @@ const
         <div class="flex">
             <div class="padding-16 width-min">
                 <label for="lstProducts">Ürünler:</label>
-                <select class="margin-top-4" style="width: 220px; height: 320px;" size="2" id="lstProducts"></select>
+                <select class="margin-top-4" style="width: 220px; height: 321px;" size="2" id="lstProducts"></select>
             </div>
             <div class="padding-16-32" style="width: 340px;">
                 <div class="padding-8 border">
